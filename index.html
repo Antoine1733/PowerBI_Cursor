@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Guide pratique Niji : développer un rapport Power BI au format PBIP avec Cursor, les Microsoft Fabric Skills et le serveur MCP Power BI.">
+  <title>Développer un rapport Power BI avec Cursor et PBIP | Niji</title>
+  <style>
+    :root { --ink:#10213a; --blue:#146ef5; --aqua:#00b9b6; --soft:#f3f7fc; --line:#dbe5f0; --orange:#ff7a00; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); font:16px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#fff; }
+    header { color:#fff; padding:72px 24px 64px; background:linear-gradient(128deg, #092652, #146ef5 67%, #00b9b6); }
+    .wrap { max-width:920px; margin:auto; }
+    .logos { display:flex; gap:14px; margin:0 0 32px; }
+    .logo { display:block; width:64px; height:64px; border-radius:12px; box-shadow:0 4px 14px rgba(0,0,0,.18); }
+    .logo-light { display:grid; place-items:center; background:#fff; }
+    .logo-light img { width:40px; height:40px; }
+    .eyebrow { margin:0 0 14px; font-weight:800; letter-spacing:.1em; font-size:.78rem; text-transform:uppercase; opacity:.9; }
+    h1 { max-width:820px; margin:0; font-size:clamp(2.25rem,5vw,4.4rem); line-height:1.04; letter-spacing:-.045em; }
+    .lead { max-width:700px; margin:24px 0 0; font-size:1.2rem; }
+    main { padding:52px 24px 82px; }
+    h2 { margin:55px 0 16px; font-size:1.7rem; line-height:1.18; letter-spacing:-.025em; }
+    h3 { margin:28px 0 8px; font-size:1.12rem; }
+    p { margin:0 0 16px; }
+    a { color:#075fc9; }
+    .intro { font-size:1.13rem; }
+    .note, .warning { border-radius:12px; padding:18px 20px; margin:24px 0; }
+    .note { border-left:5px solid var(--aqua); background:#edfbfa; }
+    .warning { border-left:5px solid var(--orange); background:#fff5e9; }
+    .roles { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin:26px 0; }
+    .card { padding:22px; border:1px solid var(--line); border-radius:14px; background:#fff; box-shadow:0 5px 20px rgba(19,54,93,.06); }
+    .card h3 { margin-top:0; }
+    .card strong { color:#075fc9; }
+    pre { overflow:auto; padding:20px; border-radius:12px; background:#0e1d32; color:#eef6ff; font:14px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; }
+    code { font-family:ui-monospace, SFMono-Regular, Consolas, monospace; }
+    :not(pre)>code { padding:.1em .32em; border-radius:4px; background:#eef3f9; color:#132b4d; }
+    ol, ul { margin:12px 0 18px; padding-left:1.35em; }
+    li { margin:7px 0; }
+    .steps { counter-reset:step; padding:0; list-style:none; }
+    .steps li { position:relative; padding:16px 16px 16px 58px; border-bottom:1px solid var(--line); }
+    .steps li::before { counter-increment:step; content:counter(step); position:absolute; left:8px; top:15px; display:grid; place-items:center; width:32px; height:32px; border-radius:50%; background:var(--blue); color:#fff; font-weight:800; }
+    .part { margin:72px 0 0; padding-top:28px; border-top:3px solid var(--blue); color:var(--blue); font-weight:800; letter-spacing:.08em; font-size:.85rem; text-transform:uppercase; }
+    .part + h2 { margin-top:10px; }
+    .toc { padding:20px 24px; border-radius:12px; background:var(--soft); }
+    .toc ol { margin:6px 0 0; }
+    .prereq { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin:20px 0 24px; }
+    .tool { display:flex; gap:16px; align-items:flex-start; padding:20px; border:1px solid var(--line); border-radius:14px; }
+    .tool img { width:48px; height:48px; flex:none; border-radius:10px; }
+    .tool h3 { margin:0 0 6px; }
+    .tool p { margin:0; }
+    .prompt { padding:22px; border-radius:12px; background:var(--soft); white-space:pre-line; }
+    @media (max-width:640px) { .roles, .prereq { grid-template-columns:1fr; } header { padding-top:48px; } }
+    @media print { header { padding:30px 0; } main { padding-top:20px; } .card { box-shadow:none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="logos">
+        <img class="logo" src="img/niji-logo.png" alt="Niji">
+        <span class="logo logo-light"><img src="img/power-bi.svg" alt="Power BI"></span>
+        <img class="logo" src="img/cursor.png" alt="Cursor">
+      </div>
+      <p class="eyebrow">Guide pratique · Power BI · Cursor</p>
+      <h1>Développer un rapport Power BI avec Cursor : le workflow PBIP qui tient la route</h1>
+      <p class="lead">Utiliser Cursor et les skills Microsoft pour construire un rapport Power BI, l’afficher dans Desktop et en vérifier les chiffres.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <p class="intro">Dans ce guide, on utilise <strong>Cursor</strong>, un éditeur de code doté d’un agent IA, avec deux <strong>skills</strong> publiés par Microsoft pour Power BI. Un skill est un guide que l’agent suit : il lui apprend à travailler sur un projet Power BI comme le ferait un développeur expérimenté.</p>
+    <p>Concrètement, les skills permettent à Cursor de :</p>
+    <ul>
+      <li>construire un rapport complet à partir d’une demande métier : pages, visuels, filtres et thème ;</li>
+      <li>ajouter ou corriger des mesures DAX dans le modèle ;</li>
+      <li>ouvrir le résultat dans Power BI Desktop et en faire des captures ;</li>
+      <li>vérifier que les chiffres affichés sont justes, et corriger tant que ce n’est pas le cas.</li>
+    </ul>
+    <nav class="toc">
+      <strong>Au programme</strong>
+      <ol>
+        <li><strong>Comprendre</strong> : le format PBIP, les skills et le serveur MCP.</li>
+        <li><strong>Pas à pas</strong> : les outils nécessaires, préparer le projet, installer les skills, puis passer une première demande à Cursor.</li>
+      </ol>
+    </nav>
+
+    <p class="part">Partie 1 · Comprendre</p>
+    <h2>Le format PBIP : un rapport sous forme de fichiers</h2>
+    <p>Un fichier <code>.pbix</code> est pratique pour un utilisateur final, mais il est peu adapté au travail assisté par un agent : son contenu n’est pas directement lisible ni versionnable comme du code. Avec <strong>PBIP</strong> (Power BI Project), le projet est enregistré dans un dossier sous forme de fichiers texte :</p>
+    <ul>
+      <li>le <strong>modèle sémantique</strong> (tables, relations, mesures DAX) dans des fichiers <code>.tmdl</code> ;</li>
+      <li>le <strong>rapport</strong> (pages, visuels, filtres, thème) dans des fichiers <code>.json</code>.</li>
+    </ul>
+    <p>Cursor peut alors les lire, les modifier et les comparer, tandis que Power BI Desktop recharge les changements.</p>
+
+    <h2>Les deux skills et les outils qu’ils appellent</h2>
+    <p>Chaque skill indique à Cursor la méthode à suivre et les outils à appeler.</p>
+    <div class="roles">
+      <section class="card">
+        <h3><code>powerbi-report-cli</code> : le rapport</h3>
+        <p>Cursor écrit les pages et visuels dans les fichiers JSON du rapport. Le skill fait ensuite appel à <code>powerbi-report-author</code>, un outil en ligne de commande, pour <strong>valider</strong> ces fichiers, <strong>ouvrir le projet dans Power BI Desktop</strong> et <strong>faire des captures</strong> des pages.</p>
+      </section>
+      <section class="card">
+        <h3><code>semantic-model-authoring</code> : le modèle</h3>
+        <p>Pour les mesures et les tables, le skill fait appel au <strong>serveur MCP Power BI Modeling</strong>, qui modifie le modèle et <strong>exécute des requêtes DAX</strong>. Sans MCP, Cursor modifie directement les fichiers <code>.tmdl</code>.</p>
+      </section>
+    </div>
+    <h3>Le serveur MCP, c’est quoi ?</h3>
+    <p>Un serveur MCP est un connecteur qui donne à Cursor des actions qu’il peut exécuter lui-même. Ici, le serveur <strong>Power BI Modeling</strong> se connecte au modèle ouvert dans Power BI Desktop : il sert à lire et modifier tables et mesures, et surtout à <strong>exécuter des requêtes DAX</strong> pour obtenir les vrais chiffres. Il est installé en même temps que les skills.</p>
+    <div class="note"><strong>Résultat :</strong> Cursor construit le rapport, le capture, puis compare les chiffres affichés aux résultats des requêtes DAX. Il corrige jusqu’à ce que les deux concordent.</div>
+
+    <p class="part">Partie 2 · Pas à pas</p>
+    <h2>Ce qu’il vous faut</h2>
+    <div class="prereq">
+      <div class="tool">
+        <img src="img/power-bi.svg" alt="Power BI">
+        <div>
+          <h3>Power BI Desktop</h3>
+          <p>La version standard, à jour, installée depuis le Microsoft Store ou le site de Microsoft. La version « optimisée pour Power BI Report Server » ne prend pas en charge les projets PBIP.</p>
+        </div>
+      </div>
+      <div class="tool">
+        <img src="img/cursor.png" alt="Cursor">
+        <div>
+          <h3>Cursor</h3>
+          <p>L’éditeur installé sur votre poste, avec un compte connecté pour utiliser l’agent.</p>
+        </div>
+      </div>
+    </div>
+    <p>À installer également :</p>
+    <ul>
+      <li><strong>Node.js</strong> : le serveur MCP Power BI Modeling est lancé avec la commande <code>npx</code>, fournie par Node.js ;</li>
+      <li><strong>APM</strong> (Agent Package Manager) : c’est l’outil qui fait fonctionner la commande <code>apm install</code> de l’étape 2. Il s’installe une seule fois sur le poste, avec cette commande PowerShell :</li>
+    </ul>
+    <pre><code>irm https://aka.ms/apm-windows | iex</code></pre>
+    <div class="warning"><strong>Attention :</strong> créez le dossier du projet sur votre disque local, pas dans un dossier synchronisé OneDrive ou SharePoint. Microsoft indique que la synchronisation peut faire échouer l’enregistrement des projets PBIP.</div>
+
+    <h2>Étape 1 : enregistrer le rapport au format PBIP dans le dossier du projet</h2>
+    <p>Au préalable, créez dans Power BI Desktop les tables utiles, déjà connectées aux données. Cursor pourra ensuite modifier Power Query, le modèle et le rapport. Enregistrez ce fichier dans un dossier projet via <strong>Fichier &gt; Enregistrer sous &gt; Projet Power BI (.pbip)</strong>, puis ouvrez ce dossier dans Cursor. Vous devez obtenir une structure de ce type :</p>
+    <pre><code>MonProjet/
+├── MonRapport.pbip                  ← fichier à ouvrir dans Power BI Desktop
+├── MonRapport.Report/               ← le rapport (fichiers JSON)
+│   └── definition/
+│       ├── report.json
+│       └── pages/
+│           └── &lt;page&gt;/
+│               ├── page.json
+│               └── visuals/&lt;visuel&gt;/visual.json
+└── MonRapport.SemanticModel/        ← le modèle (fichiers TMDL)
+    └── definition/
+        ├── model.tmdl
+        ├── relationships.tmdl
+        └── tables/
+            └── Ventes.tmdl</code></pre>
+
+    <h2>Étape 2 : installer les skills dans le dossier du projet</h2>
+    <div class="note"><strong>Installation au niveau du projet :</strong> les skills et le serveur MCP sont installés uniquement dans ce dossier. Ils ne sont disponibles dans Cursor que lorsque ce dossier est ouvert, et pas dans vos autres projets. Il est aussi possible de les installer pour tous les projets Cursor, mais c’est une autre configuration que nous ne verrons pas ici.</div>
+    <ol class="steps">
+      <li>Ouvrez le <strong>dossier racine du projet PBIP</strong> dans l’Explorateur de fichiers.</li>
+      <li>Dans ce dossier, ouvrez <strong>PowerShell</strong> : clic droit dans le dossier, puis « Ouvrir dans le Terminal » / « Ouvrir PowerShell ici ».</li>
+      <li>Exécutez la commande suivante. APM installe à la fois les skills sélectionnés <strong>et</strong> la configuration des serveurs MCP associée, pour la cible Cursor.</li>
+    </ol>
+    <pre><code>apm install microsoft/skills-for-fabric `
+  --skill semantic-model-authoring `
+  --skill powerbi-report-cli `
+  --target cursor</code></pre>
+    <p>Cette commande installe notamment :</p>
+    <ul>
+      <li><code>semantic-model-authoring</code> : le cadre pour travailler le modèle sémantique ;</li>
+      <li><code>powerbi-report-cli</code> : le cadre pour concevoir, créer et vérifier le rapport ;</li>
+      <li>les enregistrements MCP que Cursor doit reconnaître.</li>
+    </ul>
+    <p>Microsoft précise que l’installation place les skills dans le projet et enregistre les serveurs MCP pour l’outil cible. Tous les serveurs MCP Fabric déclarés par le package sont installés ; le filtre <code>--skill</code> limite les skills activés, pas les serveurs MCP.</p>
+
+    <h2>Étape 3 : ajouter une intention graphique</h2>
+    <p>Dans le projet, créez par exemple un dossier <code>design</code>. Le nom n’a pas d’importance : l’essentiel est de le citer dans votre demande. Vous pouvez y placer :</p>
+    <ul>
+      <li><code>theme.json</code>, votre thème Power BI ;</li>
+      <li>une ou plusieurs captures d’écran de référence ;</li>
+      <li>un court document de règles : couleurs, police, usages attendus, indicateurs à mettre en avant.</li>
+    </ul>
+    <p>Ce dossier ne remplace pas la consigne : il rend la consigne vérifiable. Au lieu de demander « fais un beau rapport », on indique à Cursor les fichiers à lire et l’objectif de chaque page.</p>
+
+    <h2>Étape 4 : activer et tester le serveur MCP dans Cursor</h2>
+    <ol class="steps">
+      <li>Ouvrez le dossier du projet dans Cursor.</li>
+      <li>Dans la barre latérale, ouvrez <strong>Customize</strong>, puis la section <strong>MCPs</strong>.</li>
+      <li>Vérifiez que le serveur Power BI est visible et activé. Selon la politique de l’entreprise, une première autorisation peut être demandée.</li>
+      <li>Dans le chat, demandez : <code>Peux-tu vérifier que le serveur MCP Power BI est disponible et me dire quels outils il expose ?</code></li>
+    </ol>
+    <p>Cursor demande normalement une validation avant d’exécuter un outil MCP. Prenez le temps de lire l’action proposée : un MCP est capable d’accéder à des outils externes et peut exécuter des opérations pour vous.</p>
+
+    <p>Pour tester, demandez par exemple : <code>Exécute une requête DAX qui compte les lignes de la table des sessions.</code></p>
+
+    <h2>Étape 5 : vérifier l’ouverture de Power BI Desktop</h2>
+    <p>Demandez à Cursor : <code>Ouvre ce projet dans Power BI Desktop.</code> Cette étape confirme que Cursor pourra afficher et contrôler le rendu final.</p>
+    <p>Si l’outil ne trouve pas l’exécutable de Desktop, ajoutez la variable d’environnement Windows <code>PBI_DESKTOP_PATH</code> avec le chemin réel de votre installation, puis redémarrez Cursor. Exemple :</p>
+    <pre><code>PBI_DESKTOP_PATH = C:\Program Files\WindowsApps\Microsoft.MicrosoftPowerBIDesktop_2.158.1304.0_x64__8wekyb3d8bbwe\bin\PBIDesktop.exe</code></pre>
+    <div class="warning"><strong>Attention :</strong> ne copiez pas ce chemin sans le vérifier. Le numéro de version et le dossier peuvent être différents sur votre poste. Utilisez le chemin de votre propre <code>PBIDesktop.exe</code>.</div>
+
+    <h2>Étape 6 : passer une première demande à Cursor</h2>
+    <p>Le modèle choisi dans Cursor a un impact réel sur la qualité du raisonnement et des itérations. Préférez, lorsque votre licence le permet, un modèle solide pour les tâches de conception et de code. Ensuite, donnez un maximum de contexte : objectif, utilisateurs, tables, définitions des KPI, contraintes visuelles et critères de réussite.</p>
+    <div class="prompt">Crée une page « Synthèse des ventes » avec le thème <strong>design/theme.json</strong>.
+
+Affiche le chiffre d’affaires, le nombre de commandes, l’évolution mensuelle du chiffre d’affaires et le top 10 des produits. Ajoute un filtre par année.</div>
+
+    <p>Si Power BI Desktop affiche la bannière <strong>« Apply external changes »</strong>, cliquez dessus pour charger les modifications de Cursor. Enregistrez d’abord vos éventuels changements faits dans Desktop : ils seraient sinon remplacés.</p>
+    <div class="note"><strong>Bon réflexe :</strong> restez disponible pendant l’exécution. Cursor peut vous demander une précision métier, une autorisation d’outil ou une validation de modification. Les meilleurs résultats viennent d’un aller-retour court entre l’agent et l’expert métier.</div>
+    <h2>Références</h2>
+    <ul>
+      <li><a href="https://github.com/microsoft/skills-for-fabric">Microsoft Fabric Skills — dépôt GitHub officiel</a></li>
+      <li><a href="https://learn.microsoft.com/fr-fr/power-bi/developer/projects/projects-overview">Projets Power BI Desktop (PBIP) — Microsoft Learn</a></li>
+      <li><a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-external-editing">Modifier les fichiers PBIP hors de Power BI Desktop — Microsoft Learn</a></li>
+      <li><a href="https://cursor.com/docs/mcp">Model Context Protocol (MCP) — documentation Cursor</a></li>
+    </ul>
+  </main>
+</body>
+</html>
