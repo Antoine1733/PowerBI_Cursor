@@ -158,19 +158,19 @@
     <ol class="steps">
       <li>Ouvrez le <strong>dossier racine du projet PBIP</strong> dans l’Explorateur de fichiers.</li>
       <li>Dans ce dossier, ouvrez <strong>PowerShell</strong> : clic droit dans le dossier, puis « Ouvrir dans le Terminal » / « Ouvrir PowerShell ici ».</li>
-      <li>Exécutez la commande suivante. APM installe à la fois les skills sélectionnés <strong>et</strong> la configuration des serveurs MCP associée, pour la cible Cursor.</li>
+      <li>Exécutez la commande suivante. Elle installe les skills et les serveurs MCP dans ce projet, pour Cursor.</li>
     </ol>
     <pre><code>apm install microsoft/skills-for-fabric `
   --skill semantic-model-authoring `
   --skill powerbi-report-cli `
   --target cursor</code></pre>
-    <p>Cette commande installe notamment :</p>
+    <p>Voici ce que fait chaque partie de la commande :</p>
     <ul>
-      <li><code>semantic-model-authoring</code> : le cadre pour travailler le modèle sémantique ;</li>
-      <li><code>powerbi-report-cli</code> : le cadre pour concevoir, créer et vérifier le rapport ;</li>
-      <li>les enregistrements MCP que Cursor doit reconnaître.</li>
+      <li><code>microsoft/skills-for-fabric</code> est l’adresse du dépôt GitHub. APM y récupère les fichiers à installer.</li>
+      <li><code>--skill</code> n’installe que les skills nommés, pas tous ceux du dépôt. On installe ici <code>semantic-model-authoring</code> (le modèle) et <code>powerbi-report-cli</code> (le rapport).</li>
+      <li><code>--target cursor</code> prépare l’installation pour Cursor, et non pour un autre éditeur.</li>
     </ul>
-    <p>Microsoft précise que l’installation place les skills dans le projet et enregistre les serveurs MCP pour l’outil cible. Tous les serveurs MCP Fabric déclarés par le package sont installés ; le filtre <code>--skill</code> limite les skills activés, pas les serveurs MCP.</p>
+    <p>Aucun serveur MCP n’est nommé dans la commande : ils viennent du dépôt, et APM les installe tous. Dans ce guide, on n’utilise que <code>powerbi-modeling-mcp</code>.</p>
 
     <h2>Étape 3 : ajouter une intention graphique</h2>
     <p>Dans le projet, créez par exemple un dossier <code>design</code>. Le nom n’a pas d’importance : l’essentiel est de le citer dans votre demande. Vous pouvez y placer :</p>
@@ -179,7 +179,7 @@
       <li>une ou plusieurs captures d’écran de référence ;</li>
       <li>un court document de règles : couleurs, police, usages attendus, indicateurs à mettre en avant.</li>
     </ul>
-    <p>Ce dossier ne remplace pas la consigne : il rend la consigne vérifiable. Au lieu de demander « fais un beau rapport », on indique à Cursor les fichiers à lire et l’objectif de chaque page.</p>
+    <p>Ce dossier ne suffit pas à lui seul : il faut encore le citer dans votre demande. Au lieu de demander « fais un beau rapport », on indique à Cursor les fichiers à lire et l’objectif de chaque page.</p>
 
     <h2>Étape 4 : activer et tester le serveur MCP dans Cursor</h2>
     <ol class="steps">
@@ -196,15 +196,15 @@
     <p>Demandez à Cursor : <code>Ouvre ce projet dans Power BI Desktop.</code> Cette étape confirme que Cursor pourra afficher et contrôler le rendu final.</p>
     <p>Si l’outil ne trouve pas l’exécutable de Desktop, ajoutez la variable d’environnement Windows <code>PBI_DESKTOP_PATH</code> avec le chemin réel de votre installation, puis redémarrez Cursor. Exemple :</p>
     <pre><code>PBI_DESKTOP_PATH = C:\Program Files\WindowsApps\Microsoft.MicrosoftPowerBIDesktop_2.158.1304.0_x64__8wekyb3d8bbwe\bin\PBIDesktop.exe</code></pre>
-    <div class="warning"><strong>Attention :</strong> ne copiez pas ce chemin sans le vérifier. Le numéro de version et le dossier peuvent être différents sur votre poste. Utilisez le chemin de votre propre <code>PBIDesktop.exe</code>.</div>
+    <div class="warning"><strong>Attention :</strong> ce chemin est un exemple. Utilisez celui de votre propre <code>PBIDesktop.exe</code>.</div>
 
     <h2>Étape 6 : passer une première demande à Cursor</h2>
-    <p>Le modèle choisi dans Cursor a un impact réel sur la qualité du raisonnement et des itérations. Préférez, lorsque votre licence le permet, un modèle solide pour les tâches de conception et de code. Ensuite, donnez un maximum de contexte : objectif, utilisateurs, tables, définitions des KPI, contraintes visuelles et critères de réussite.</p>
+    <p>Le modèle d’IA choisi dans Cursor a un impact réel sur la qualité du raisonnement et des itérations. Un modèle plus puissant est utile dans la phase de conception ; un modèle plus économique peut suffire ensuite. Dans tous les cas, donnez un maximum de contexte : objectif, utilisateurs, tables, définitions des KPI, contraintes visuelles et critères de réussite.</p>
     <div class="prompt">Crée une page « Synthèse des ventes » avec le thème <strong>design/theme.json</strong>.
 
 Affiche le chiffre d’affaires, le nombre de commandes, l’évolution mensuelle du chiffre d’affaires et le top 10 des produits. Ajoute un filtre par année.</div>
 
-    <p>Si Power BI Desktop affiche la bannière <strong>« Apply external changes »</strong>, cliquez dessus pour charger les modifications de Cursor. Enregistrez d’abord vos éventuels changements faits dans Desktop : ils seraient sinon remplacés.</p>
+    <p>Le mieux est de laisser Cursor travailler, puis de revoir le résultat à la fin. Si vous avez tout de même modifié le fichier dans Desktop pendant ce temps, et que la bannière <strong>« Apply external changes »</strong> s’affiche, enregistrez d’abord ces modifications, puis cliquez. Sans cet enregistrement, elles sont remplacées par celles de Cursor.</p>
     <div class="note"><strong>Bon réflexe :</strong> restez disponible pendant l’exécution. Cursor peut vous demander une précision métier, une autorisation d’outil ou une validation de modification. Les meilleurs résultats viennent d’un aller-retour court entre l’agent et l’expert métier.</div>
     <h2>Références</h2>
     <ul>
